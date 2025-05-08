@@ -76,52 +76,52 @@ async def from_otx(domain):
         return []
 
 # Function to fetch subdomains from ThreatCrowd
-# async def from_threatcrowd(domain):
-#     try:
-#         print("[*] Fetching from ThreatCrowd...")
-#         url = f"https://www.threatcrowd.org/searchApi/v2/domain/report/?domain={domain}"
-#         async with httpx.AsyncClient() as client:
-#             r = await client.get(url, timeout=30)
-#         r.raise_for_status()
-#         return r.json().get('subdomains', [])
-#     except httpx.RequestError as e:
-#         print(f"[!] ThreatCrowd error: {e}")
-#         return []
+async def from_threatcrowd(domain):
+    try:
+        print("[*] Fetching from ThreatCrowd...")
+        url = f"https://www.threatcrowd.org/searchApi/v2/domain/report/?domain={domain}"
+        async with httpx.AsyncClient() as client:
+            r = await client.get(url, timeout=30)
+        r.raise_for_status()
+        return r.json().get('subdomains', [])
+    except httpx.RequestError as e:
+        print(f"[!] ThreatCrowd error: {e}")
+        return []
 
 # Function to fetch subdomains from VirusTotal
-# async def from_virustotal(domain):
-#     try:
-#         print("[*] Fetching from VirusTotal...")
-#         url = f"https://www.virustotal.com/api/v3/domains/{domain}/subdomains"
-#         headers = {"x-apikey": "your_virustotal_api_key_here"}  # Replace with your VirusTotal API key
-#         async with httpx.AsyncClient() as client:
-#             r = await client.get(url, headers=headers, timeout=30)
-#         r.raise_for_status()
-#         subdomains = set()
-#         for entry in r.json().get('data', []):
-#             subdomains.add(entry['id'])
-#         return list(subdomains)
-#     except httpx.RequestError as e:
-#         print(f"[!] VirusTotal error: {e}")
-#         return []
+async def from_virustotal(domain):
+    try:
+        print("[*] Fetching from VirusTotal...")
+        url = f"https://www.virustotal.com/api/v3/domains/{domain}/subdomains"
+        headers = {"x-apikey": "your_virustotal_api_key_here"}  # Replace with your VirusTotal API key
+        async with httpx.AsyncClient() as client:
+            r = await client.get(url, headers=headers, timeout=30)
+        r.raise_for_status()
+        subdomains = set()
+        for entry in r.json().get('data', []):
+            subdomains.add(entry['id'])
+        return list(subdomains)
+    except httpx.RequestError as e:
+        print(f"[!] VirusTotal error: {e}")
+        return []
 
 # Function to fetch subdomains from PassiveTotal
-# async def from_passivetotal(domain):
-#     try:
-#         print("[*] Fetching from PassiveTotal...")
-#         url = f"https://api.passivetotal.org/v2/enrichment/subdomains?identifier={domain}"
-#         headers = {
-#             "Authorization": "Bearer your_passivetotal_api_key_here"  # Replace with your API key
-#         }
-#         r = requests.get(url, headers=headers, timeout=30, verify=False)  # Disable SSL verification
-#         r.raise_for_status()
-#         subdomains = set()
-#         for entry in r.json().get("results", []):
-#             subdomains.add(entry["subdomain"])
-#         return list(subdomains)
-#     except requests.exceptions.RequestException as e:
-#         print(f"[!] PassiveTotal error: {e}")
-#         return []
+async def from_passivetotal(domain):
+    try:
+        print("[*] Fetching from PassiveTotal...")
+        url = f"https://api.passivetotal.org/v2/enrichment/subdomains?identifier={domain}"
+        headers = {
+            "Authorization": "Bearer your_passivetotal_api_key_here"  # Replace with your API key
+        }
+        r = requests.get(url, headers=headers, timeout=30, verify=False)  # Disable SSL verification
+        r.raise_for_status()
+        subdomains = set()
+        for entry in r.json().get("results", []):
+            subdomains.add(entry["subdomain"])
+        return list(subdomains)
+    except requests.exceptions.RequestException as e:
+        print(f"[!] PassiveTotal error: {e}")
+        return []
 
 
 # Function to export subdomains to a file
@@ -215,9 +215,9 @@ async def gather_subdomains(domain):
         from_sublist3r,
         from_crtsh,
         from_otx,
-        # from_threatcrowd,
-        # from_virustotal,
-        # from_passivetotal
+        from_threatcrowd,
+        from_virustotal,
+        from_passivetotal
     ]
     tasks = [source(domain) for source in sources]
     results = await asyncio.gather(*tasks)
