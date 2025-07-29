@@ -2,14 +2,11 @@
 
 echo "[*] Installing SubRecon dependencies..."
 
-# Create a virtual environment (optional but good practice)
 python3 -m venv venv
 source venv/bin/activate
 
-# Install Python dependencies
 pip install -r requirements.txt
 
-# Check for required binaries
 echo "[*] Checking for Subfinder and Sublist3r..."
 
 if ! command -v subfinder &> /dev/null; then
